@@ -7,7 +7,7 @@ class AppRouter {
   AppRouter();
 
   final router = GoRouter(
-    initialLocation: '/',
+    initialLocation: '/sign-up',
     routes: [
       GoRoute(
         path: '/',
