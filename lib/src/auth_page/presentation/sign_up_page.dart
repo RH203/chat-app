@@ -1,3 +1,5 @@
+import 'package:chat_app/core/injection/injection.dart';
+import 'package:chat_app/core/utils/helper_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/core/common/widgets/custom_button/custom_buttons.dart'; // Pastikan ini sesuai dengan struktur folder dan file
 import 'package:chat_app/core/common/widgets/custom_text_field/custom_text_field.dart'; // Pastikan ini sesuai dengan struktur folder dan file
@@ -10,18 +12,22 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  String _validator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Field cannot be empty';
+  void _onSubmit() {
+    if (_formKey.currentState!.validate()) {
+      // TODO: Implement logic sign in
+    } else {
+      // TODO: Implement else logic sign in
     }
-    return '';
   }
 
   @override
   void dispose() {
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -32,54 +38,66 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView(
-          children: <Widget>[
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 100),
-              child: const Text(
-                "Sign Up",
-                style: TextStyle(
-                  fontSize: 35,
-                  fontWeight: FontWeight.w500,
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: <Widget>[
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 100),
+                child: const Text(
+                  "Sign Up",
+                  style: TextStyle(
+                    fontSize: 35,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
-            ),
-            CustomTextField(
-              controller: _emailController,
-              hintText: "example@gmail.com",
-              label: "Email",
-              prefixIcon: const Icon(Icons.email),
-              validator: _validator,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            CustomTextField(
-              controller: _passwordController,
-              hintText: "example123",
-              label: "Password",
-              prefixIcon: const Icon(Icons.lock),
-              validator: _validator,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            CustomTextField(
-              controller: _passwordController,
-              hintText: "example123",
-              label: "Password",
-              prefixIcon: const Icon(Icons.lock),
-              validator: _validator,
-            ),
-            const SizedBox(
-              height: 70,
-            ),
-            CustomButtons(
-              onPressed: () {},
-              text: "Sign Up",
-            ),
-          ],
+              const SizedBox(
+                height: 20,
+              ),
+              CustomTextField(
+                controller: _usernameController,
+                hintText: "example",
+                label: "Username",
+                prefixIcon: const Icon(Icons.person),
+                validator: getIt<HelperValidator>().validateUsername,
+                keyboardType: TextInputType.text,
+                autoCorrect: false,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              CustomTextField(
+                controller: _emailController,
+                hintText: "example@gmail.com",
+                label: "Email",
+                prefixIcon: const Icon(Icons.email),
+                validator: getIt<HelperValidator>().validateEmail,
+                keyboardType: TextInputType.emailAddress,
+                autoCorrect: false,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              CustomTextField(
+                controller: _passwordController,
+                hintText: "example123",
+                label: "Password",
+                prefixIcon: const Icon(Icons.lock),
+                validator: getIt<HelperValidator>().validatePassword,
+                keyboardType: TextInputType.text,
+                autoCorrect: false,
+              ),
+              const SizedBox(
+                height: 70,
+              ),
+              CustomButtons(
+                onPressed: _onSubmit,
+                text: "Sign Up",
+              ),
+            ],
+          ),
         ),
       ),
     );
