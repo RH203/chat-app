@@ -3,7 +3,9 @@ import 'package:chat_app/core/common/widgets/custom_button/custom_buttons.dart';
 import 'package:chat_app/core/common/widgets/custom_text_field/custom_text_field.dart';
 import 'package:chat_app/core/injection/injection.dart';
 import 'package:chat_app/core/utils/helper_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -17,13 +19,43 @@ class _SignInPageState extends State<SignInPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _onSubmit() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: Implement logic sign in
-      _formKey.currentState!.save();
-      AppLogger.debug(_emailController.text);
-    } else {
-      // TODO: Implement else logic sign in
+  void _onSubmit() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    try {
+      final _signIn = await getIt<FirebaseAuth>().signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      if (mounted) Navigator.of(context).pop();
+      if (mounted) context.go('/chat-screen');
+    } on FirebaseAuthException catch (message) {
+      AppLogger.error(message);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${message.message}'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (message) {
+      AppLogger.error(message);
     }
   }
 
@@ -79,6 +111,15 @@ class _SignInPageState extends State<SignInPage> {
               ),
               const SizedBox(
                 height: 70,
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton(
+                  onPressed: () => context.go('/sign-up'),
+                  child: const Text(
+                    'Doesn\'t have account?',
+                  ),
+                ),
               ),
               CustomButtons(
                 onPressed: _onSubmit,
