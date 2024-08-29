@@ -47,3 +47,4 @@ app.*.map.json
 /web/
 /windows/
 firebase.json
+/lib/firebase_options.dart
