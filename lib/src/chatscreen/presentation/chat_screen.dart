@@ -1,5 +1,3 @@
-import 'package:chat_app/core/injection/injection.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -17,7 +15,7 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         actions: [
           IconButton.outlined(
-            onPressed: () => context.go(''),
+            onPressed: () => context.push('/profile-screen'),
             icon: const Icon(Icons.person),
           )
         ],
