@@ -41,7 +41,6 @@ class _SignUpPageState extends State<SignUpPage> {
         password: _passwordController.text,
       );
 
-      if (mounted) Navigator.of(context).pop();
       if (mounted) context.go('/chat-screen');
     } on FirebaseAuthException catch (message) {
       AppLogger.error("${message.email} - ${message.message}");
@@ -57,6 +56,8 @@ class _SignUpPageState extends State<SignUpPage> {
       }
     } catch (message) {
       AppLogger.error(message);
+    } finally {
+      if (mounted) Navigator.of(context).pop();
     }
   }
 
