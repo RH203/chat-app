@@ -1,10 +1,9 @@
-import 'package:chat_app/core/injection/injection.dart';
 import 'package:chat_app/src/auth_page/presentation/sign_in_page.dart';
 import 'package:chat_app/src/auth_page/presentation/sign_up_page.dart';
 import 'package:chat_app/src/chatscreen/presentation/chat_screen.dart';
 import 'package:chat_app/src/homepage/presentation/homepage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:chat_app/src/profile/presentation/profile_screen.dart';
+
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
@@ -12,6 +11,7 @@ class AppRouter {
 
   final router = GoRouter(
     debugLogDiagnostics: true,
+    initialLocation: '/',
     routes: [
       GoRoute(
         path: '/',
@@ -28,6 +28,10 @@ class AppRouter {
       GoRoute(
         path: '/chat-screen',
         builder: (context, state) => const ChatScreen(),
+      ),
+      GoRoute(
+        path: '/profile-screen',
+        builder: (context, state) => const ProfileScreen(),
       )
     ],
   );
