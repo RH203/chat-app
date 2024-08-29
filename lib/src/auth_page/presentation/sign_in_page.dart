@@ -40,7 +40,6 @@ class _SignInPageState extends State<SignInPage> {
         password: _passwordController.text,
       );
 
-      if (mounted) Navigator.of(context).pop();
       if (mounted) context.go('/chat-screen');
     } on FirebaseAuthException catch (message) {
       AppLogger.error(message);
@@ -56,6 +55,8 @@ class _SignInPageState extends State<SignInPage> {
       }
     } catch (message) {
       AppLogger.error(message);
+    } finally {
+      if (mounted) Navigator.of(context).pop();
     }
   }
 
