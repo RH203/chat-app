@@ -12,11 +12,13 @@ class Homepage extends StatelessWidget {
       body: StreamBuilder(
         stream: getIt<FirebaseAuth>().authStateChanges(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            context.go('/chat-screen');
-          } else {
-            context.go('/sign-in');
-          }
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (snapshot.hasData) {
+              context.go('/chat-screen');
+            } else if (snapshot.hasError) {
+              context.go('/sign-in');
+            }
+          });
           return const Center(
             child: CircularProgressIndicator(),
           );
