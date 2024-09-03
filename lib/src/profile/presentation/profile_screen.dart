@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:chat_app/core/injection/injection.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,6 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final _user = getIt<FirebaseAuth>().currentUser;
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -36,6 +39,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
               onPressed: () => context.pop(),
               icon: const Icon(Icons.arrow_back),
             ),
+            actions: [
+              IconButton.outlined(
+                onPressed: () async {
+                  await getIt<FirebaseAuth>().signOut();
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    context.go("/sign-in");
+                  });
+                },
+                icon: const Icon(Icons.logout_outlined),
+              )
+            ],
           ),
           SliverList.list(
             children: [
@@ -60,10 +74,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
-              const Text(
-                "Raihan Firdaus",
+              Text(
+                "${_user!.displayName}",
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 25,
                 ),
               )
