@@ -16,8 +16,25 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  late TextEditingController _emailController;
+  late TextEditingController _fullnameController;
+  late TextEditingController _passwordController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _emailController = TextEditingController();
+    _fullnameController = TextEditingController();
+    _passwordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   void _onSubmit() async {
     if (!_formKey.currentState!.validate()) {
@@ -35,11 +52,18 @@ class _SignUpPageState extends State<SignUpPage> {
     );
 
     try {
-      final _signUp =
+      UserCredential _signUp =
           await getIt<FirebaseAuth>().createUserWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
+
+      User? user = _signUp.user;
+
+      if (user != null) {
+        await user.updateDisplayName(_fullnameController.text);
+        await user.reload();
+      }
 
       if (mounted) context.go('/chat-screen');
     } on FirebaseAuthException catch (message) {
@@ -57,7 +81,7 @@ class _SignUpPageState extends State<SignUpPage> {
     } catch (message) {
       AppLogger.error(message);
     } finally {
-      if (mounted) Navigator.of(context).pop();
+      if (mounted) context.pop();
     }
   }
 
@@ -78,13 +102,6 @@ class _SignUpPageState extends State<SignUpPage> {
         );
       },
     );
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
   }
 
   @override
@@ -117,6 +134,18 @@ class _SignUpPageState extends State<SignUpPage> {
                 prefixIcon: const Icon(Icons.email),
                 validator: getIt<HelperValidator>().validateEmail,
                 keyboardType: TextInputType.emailAddress,
+                autoCorrect: false,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              CustomTextField(
+                controller: _fullnameController,
+                hintText: "Your name",
+                label: "Full name",
+                prefixIcon: const Icon(Icons.person_2),
+                validator: getIt<HelperValidator>().validateUsername,
+                keyboardType: TextInputType.text,
                 autoCorrect: false,
               ),
               const SizedBox(
