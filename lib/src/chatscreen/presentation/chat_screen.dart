@@ -1,4 +1,8 @@
 import 'package:chat_app/app_logger.dart';
+import 'package:chat_app/core/injection/injection.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,12 +23,25 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
-  void _sendMessage() {
+  Future<void> _sendMessage() async {
     final _message = _messageController.text;
-    if (_message.trim().isEmpty) return;
-    AppLogger.debug(_message);
+    final user = getIt<FirebaseAuth>().currentUser!;
+    final firestore = getIt<FirebaseFirestore>();
+    final userData = await getIt<FirebaseFirestore>()
+        .collection("users")
+        .doc(user.uid)
+        .get();
 
+    if (_message.trim().isEmpty) return;
     _messageController.clear();
+
+    await firestore.collection("chat").add({
+      "text": _message,
+      "createdAt": Timestamp.now(),
+      "userId": user.uid,
+      "username": userData.data()!['fullname'],
+      "userImage": userData.data()!['image_url'],
+    });
   }
 
   @override
