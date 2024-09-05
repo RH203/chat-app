@@ -12,6 +12,6 @@ Future<void> setup() async {
   getIt.registerSingleton<AppRouter>(AppRouter());
   getIt.registerSingleton<HelperValidator>(HelperValidator());
   getIt.registerSingleton<FirebaseAuth>(FirebaseAuth.instance);
-  getIt.registerFactory<FirebaseStorage>(() => FirebaseStorage.instance);
+  getIt.registerSingleton<FirebaseStorage>(FirebaseStorage.instance);
   getIt.registerSingleton<FirebaseFirestore>(FirebaseFirestore.instance);
 }
