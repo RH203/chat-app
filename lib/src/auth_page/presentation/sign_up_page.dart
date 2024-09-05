@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/core/common/widgets/custom_button/custom_buttons.dart';
 import 'package:chat_app/core/common/widgets/custom_text_field/custom_text_field.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -45,8 +46,11 @@ class _SignUpPageState extends State<SignUpPage> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return const Center(
-          child: CircularProgressIndicator(),
+        return Center(
+          child: LoadingAnimationWidget.beat(
+            color: Colors.blueAccent,
+            size: 150,
+          ),
         );
       },
     );
