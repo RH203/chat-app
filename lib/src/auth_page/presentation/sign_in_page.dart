@@ -6,6 +6,7 @@ import 'package:chat_app/core/utils/helper_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -19,7 +20,7 @@ class _SignInPageState extends State<SignInPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _onSubmit() async {
+  Future<void> _onSubmit() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -28,8 +29,11 @@ class _SignInPageState extends State<SignInPage> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return const Center(
-          child: CircularProgressIndicator(),
+        return Center(
+          child: LoadingAnimationWidget.beat(
+            color: Colors.blueAccent,
+            size: 150,
+          ),
         );
       },
     );
