@@ -17,19 +17,9 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  late TextEditingController _emailController;
-  late TextEditingController _fullnameController;
-  late TextEditingController _passwordController;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _emailController = TextEditingController();
-    _fullnameController = TextEditingController();
-    _passwordController = TextEditingController();
-  }
-
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _fullnameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   @override
   void dispose() {
     _emailController.dispose();
