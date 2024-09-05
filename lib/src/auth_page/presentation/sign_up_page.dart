@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/core/common/widgets/custom_button/custom_buttons.dart';
 import 'package:chat_app/core/common/widgets/custom_text_field/custom_text_field.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -16,19 +17,9 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  late TextEditingController _emailController;
-  late TextEditingController _fullnameController;
-  late TextEditingController _passwordController;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _emailController = TextEditingController();
-    _fullnameController = TextEditingController();
-    _passwordController = TextEditingController();
-  }
-
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _fullnameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   @override
   void dispose() {
     _emailController.dispose();
@@ -45,8 +36,11 @@ class _SignUpPageState extends State<SignUpPage> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return const Center(
-          child: CircularProgressIndicator(),
+        return Center(
+          child: LoadingAnimationWidget.beat(
+            color: Colors.blueAccent,
+            size: 150,
+          ),
         );
       },
     );

@@ -27,7 +27,7 @@ class AppRouter {
       ),
       GoRoute(
         path: '/chat-screen',
-        builder: (context, state) => const ChatScreen(),
+        builder: (context, state) => ChatScreen(),
       ),
       GoRoute(
         path: '/profile-screen',
