@@ -57,6 +57,24 @@ class _SignUpPageState extends State<SignUpPage> {
       if (user != null) {
         await user.updateDisplayName(_fullnameController.text);
         await user.reload();
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Account successfully created!"),
+                content: const Text(
+                    "Please upload your profile picture to complete your account setup."),
+                actions: [
+                  TextButton(
+                    onPressed: () => context.go('/profile-screen'),
+                    child: const Text("Go tp profile"),
+                  )
+                ],
+              );
+            },
+          );
+        }
       }
 
       if (mounted) context.go('/chat-screen');
@@ -77,25 +95,6 @@ class _SignUpPageState extends State<SignUpPage> {
     } finally {
       if (mounted) context.pop();
     }
-  }
-
-  void _showModalDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Sign Up Successful'),
-          content: const Text(
-              'You have successfully signed up. Please sign in to continue.'),
-          actions: [
-            ElevatedButton(
-              onPressed: () => context.go('/sign-in'),
-              child: const Text('Sign In'),
-            )
-          ],
-        );
-      },
-    );
   }
 
   @override

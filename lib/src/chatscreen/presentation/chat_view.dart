@@ -1,5 +1,7 @@
+import 'package:chat_app/core/common/widgets/chat_bubble/chat_bubble.dart';
 import 'package:chat_app/core/injection/injection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ChatView extends StatefulWidget {
@@ -11,6 +13,8 @@ class ChatView extends StatefulWidget {
 
 class _ChatViewState extends State<ChatView> {
   final _firestore = getIt<FirebaseFirestore>();
+  final _user = getIt<FirebaseAuth>().currentUser!;
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -45,9 +49,29 @@ class _ChatViewState extends State<ChatView> {
             reverse: true,
             itemCount: _loadedMessage.length,
             itemBuilder: (context, index) {
-              return Text(
-                _loadedMessage[index].data()['text'],
-              );
+              final chatMessage = _loadedMessage[index].data();
+              final nextChatMessage = index + 1 < _loadedMessage.length
+                  ? _loadedMessage[index + 1].data()
+                  : null;
+
+              final currentMessageUserId = chatMessage['userId'];
+
+              final nextMessageUserId =
+                  nextChatMessage != null ? nextChatMessage['userId'] : null;
+
+              final nextUserIsSame = nextMessageUserId == currentMessageUserId;
+
+              if (nextUserIsSame) {
+                return ChatBubble.next(
+                    message: chatMessage['text'],
+                    isMe: _user.uid == currentMessageUserId);
+              } else {
+                return ChatBubble.first(
+                    userImage: chatMessage['userImage'],
+                    username: chatMessage['username'],
+                    message: chatMessage['text'],
+                    isMe: _user.uid == currentMessageUserId);
+              }
             },
           );
         },

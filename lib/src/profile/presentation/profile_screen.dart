@@ -71,6 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = getIt<FirebaseAuth>().currentUser!;
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -100,16 +101,56 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      CircleAvatar(
-                        radius: 60,
-                        backgroundColor: Colors.grey[300],
-                        backgroundImage: _pickedImageFile != null
-                            ? FileImage(_pickedImageFile!)
-                            : null,
-                      ),
-                      Visibility(
-                        visible: _pickedImageFile == null,
-                        child: const Text("Change Image"),
+                      FutureBuilder<DocumentSnapshot>(
+                        future: getIt<FirebaseFirestore>()
+                            .collection("users")
+                            .doc(user.uid)
+                            .get(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircleAvatar(
+                              radius: 60,
+                              backgroundColor: Colors.grey,
+                              child: CircularProgressIndicator(),
+                            );
+                          } else if (snapshot.hasError) {
+                            return CircleAvatar(
+                              radius: 60,
+                              backgroundColor: Colors.grey[300],
+                              child: const Icon(Icons.error),
+                            );
+                          } else if (snapshot.hasData &&
+                              snapshot.data != null) {
+                            final imageUrl = snapshot.data!['image_url'];
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CircleAvatar(
+                                  radius: 60,
+                                  backgroundImage: imageUrl != null
+                                      ? NetworkImage(imageUrl)
+                                      : null,
+                                  backgroundColor: Colors.grey[300],
+                                  child: imageUrl == null
+                                      ? const Icon(Icons.person)
+                                      : null,
+                                ),
+                                Visibility(
+                                  visible: _pickedImageFile == null &&
+                                      !snapshot.hasData,
+                                  child: const Text("Change Image"),
+                                ),
+                              ],
+                            );
+                          } else {
+                            return CircleAvatar(
+                              radius: 60,
+                              backgroundColor: Colors.grey[300],
+                              child: const Icon(Icons.person),
+                            );
+                          }
+                        },
                       ),
                     ],
                   ),
