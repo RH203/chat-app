@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomButtons extends StatefulWidget {
+class CustomButtons extends StatelessWidget {
   const CustomButtons({
     super.key,
     required this.onPressed,
@@ -11,20 +11,15 @@ class CustomButtons extends StatefulWidget {
   final void Function() onPressed;
 
   @override
-  State<CustomButtons> createState() => _CustomButtonsState();
-}
-
-class _CustomButtonsState extends State<CustomButtons> {
-  @override
   Widget build(BuildContext context) {
     return OutlinedButton(
-      onPressed: widget.onPressed,
+      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         splashFactory: InkSplash.splashFactory,
         padding: const EdgeInsets.symmetric(vertical: 20),
       ),
       child: Text(
-        widget.text,
+        text,
         style: const TextStyle(
           fontSize: 27,
         ),
