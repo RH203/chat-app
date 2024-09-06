@@ -28,21 +28,26 @@ class _ChatScreenState extends State<ChatScreen> {
     final _message = _messageController.text;
     final user = getIt<FirebaseAuth>().currentUser!;
     final firestore = getIt<FirebaseFirestore>();
-    final userData = await getIt<FirebaseFirestore>()
-        .collection("users")
-        .doc(user.uid)
-        .get();
 
-    if (_message.trim().isEmpty) return;
-    _messageController.clear();
+    try {
+      final userData = await getIt<FirebaseFirestore>()
+          .collection("users")
+          .doc(user.uid)
+          .get();
 
-    await firestore.collection("chat").add({
-      "text": _message,
-      "createdAt": Timestamp.now(),
-      "userId": user.uid,
-      "username": userData.data()!['fullname'],
-      "userImage": userData.data()!['image_url'],
-    });
+      if (_message.trim().isEmpty) return;
+      _messageController.clear();
+
+      await firestore.collection("chat").add({
+        "text": _message,
+        "createdAt": Timestamp.now(),
+        "userId": user.uid,
+        "username": userData.data()!['fullname'],
+        "userImage": userData.data()!['image_url'],
+      });
+    } catch (error) {
+      AppLogger.error(error);
+    }
   }
 
   @override
