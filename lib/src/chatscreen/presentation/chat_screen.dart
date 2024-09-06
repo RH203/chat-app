@@ -1,5 +1,6 @@
 import 'package:chat_app/app_logger.dart';
 import 'package:chat_app/core/injection/injection.dart';
+import 'package:chat_app/src/chatscreen/presentation/chat_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -57,11 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: Column(
         children: [
-          const Expanded(
-            child: Center(
-              child: Text("No message found"),
-            ),
-          ),
+          ChatView(),
           Row(
             children: [
               Expanded(
